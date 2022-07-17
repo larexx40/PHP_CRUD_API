@@ -17,7 +17,9 @@
 
         function getUser(){
             $sql = "SELECT * FROM user";
-            $result = $this->conn->query($sql);
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+            $result = $stmt->get_result();
             return $result;
         }
 
@@ -25,6 +27,7 @@
             $sql = "SELECT * FROM user WHERE id = ?";
             $stmt = $this->conn->prepare($sql);
             $stmt->bind_param('i', $this->id);
+            $stmt->execute();
             $result = $stmt->get_result();
             return $result;
         }
