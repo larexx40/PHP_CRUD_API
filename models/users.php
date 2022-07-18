@@ -64,7 +64,15 @@
             return false;
         }
 
-        
+        function getUserByEmail(){
+            $sqlQuery = "SELECT * FROM user WHERE email = ?";
+            $stmt = $this->conn->prepare($sqlQuery);
+            $stmt->bind_param('s', $this->email);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            return $result;
+        }
+
 
     }
 ?>
