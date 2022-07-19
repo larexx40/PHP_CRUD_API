@@ -4,7 +4,7 @@
 
     include_once '../../models/users.php';
 
-    $users = new users();
+    $users = new Users();
 
     $result = $users->getUser();
 

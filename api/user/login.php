@@ -25,18 +25,17 @@
         if($emailExist !== false && $emailExist->num_rows > 0){
             $row = $emailExist->fetch_assoc();
             $hash = $row['password'];
-            $ispassword = password_verify($password, $hash);
-            if($ispassword == true){
-                echo json_encode(array("message"=> "correct Password", "password"=>$password, "encrypt password"=> $row['password']));
+            if(password_verify($password, $hash)){
+                echo json_encode(array("message"=> "correct Password", "status"=> true));
             }else {
-                echo json_encode(array("message"=> "incorrect Password", "password"=>$password, "encrypt password"=> $row['password']));
+                echo json_encode(array("message"=> "incorrect Password" , "status"=> false));
             }
         }else{
             http_response_code(200);
-            echo json_encode(array("message"=> "Email Does not Exist"));
+            echo json_encode(array("message"=> "Email Does not Exist", "status"=> false));
         }
     }else {
-        echo json_encode(array("message"=> "Email and password Compulsory"));
+        echo json_encode(array("message"=> "Email and password Compulsory", "status"=> false));
     }
 
     
