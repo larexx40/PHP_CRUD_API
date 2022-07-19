@@ -6,6 +6,7 @@ let app = Vue.createApp({
             title: '',
             body: '',
             messages: [],
+            authToken: ''
         }
     },
     methods: {
@@ -14,15 +15,34 @@ let app = Vue.createApp({
                 title: this.title,
                 body: this.body
             }
-            let endpoint = ''
-            let response = await axios.post(endpoint, input)
+            const url = 'http://localhost/loadPDO/api/message/insertmessage.php';
+            const options = {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${this.authToken}` },
+                url,
+                data: input,
+            }
+            try {
+                let response = await axios(options)
+                if (response) {
+                    this.messages = response.data;
+                    console.log(response.data);
+                }
+            } catch (error) {
+                console.log(error);
+            }
             swal(response.data);
             this.handleGetMessage()
         },
         async handleGetMessage(){
-            let endpoint = 'http://localhost/loadPDO/api/message/getmessage.php'
+            const url = 'http://localhost/loadPDO/api/message/getmessage.php';
+            const options = {
+                method: "GET",
+                headers: { "Authorization": `Bearer ${this.authToken}` },
+                url
+            }
             try {
-                let response = await axios.get(endpoint)
+                let response = await axios(options)
                 if (response) {
                     this.messages = response.data;
                     console.log(response.data);
@@ -32,13 +52,19 @@ let app = Vue.createApp({
             }
         },
         async handleDelete(id){
+            const url = 'http://localhost/loadPDO/api/message/deletemessage.php';
+            const options = {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${this.authToken}` },
+                url
+            }
             //console.log(id);
             let input = {
                 id: id
             }
-            let endpoint = 'http://localhost/loadPDO/api/message/deletemessage.php'
+            //let endpoint = 'http://localhost/loadPDO/api/message/deletemessage.php'
             try {
-                let response = await axios.post(endpoint, input)
+                let response = await axios(endpoint, input)
                 if (response) {
                     console.log(response.data);
                     swal(response.data);
@@ -52,12 +78,24 @@ let app = Vue.createApp({
             this.id =id;
             this.title =title;
             this.body = body;
+        },
+        getToken(){
+            const token = window.localStorage.getItem("authToken");
+            //console.log(token);
+            this.authToken = token;
         }
     },
     async mounted() {
-        let endpoint = 'http://localhost/loadPDO/api/message/getmessage.php'
+        this.getToken();
+        console.log(this.authToken);
+        let url = 'http://localhost/loadPDO/api/message/getmessage.php'
+        const options = {
+            method: "GET",
+            headers: { "Authorization": `Bearer ${this.authToken}` },
+            url
+        }
         try {
-            let response = await axios.get(endpoint)
+            let response = await axios(options)
             if (response) {
                 this.messages = response.data;
                 console.log(response.data);

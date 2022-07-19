@@ -5,7 +5,8 @@
     header("Acess-Control-Allow-Headers: Acess-Control-Allow-Headers,Content-Type,Acess-Control-Allow-Methods, Authorization");
     
     include_once '../../models/users.php';
- 
+    include '../apifunctions.php';
+     
     $user = new Users();
 
     //to collect input as json
@@ -19,6 +20,11 @@
         $user->password = $data->password;
         $password = $data->password;
 
+        $userPubkey = $email;
+        $companyprivateKey = "server1234";
+        $minutetoend = '10';
+        $serverName = "saverdb";
+
 
         //check if email exist
         $emailExist = $user->getUserByEmail();
@@ -26,7 +32,8 @@
             $row = $emailExist->fetch_assoc();
             $hash = $row['password'];
             if(password_verify($password, $hash)){
-                echo json_encode(array("message"=> "correct Password", "status"=> true));
+                $token =getTokenToSendAPI($email,$companyprivateKey,$minutetoend,$serverName);
+                echo json_encode(array("message"=> "correct Password", "authtoken"=> $token, "status"=> true));
             }else {
                 echo json_encode(array("message"=> "incorrect Password" , "status"=> false));
             }
@@ -39,7 +46,6 @@
     }
 
     
-
 
 
 ?>
