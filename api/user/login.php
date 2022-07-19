@@ -16,26 +16,27 @@
     if(!empty($data->email) && !empty($data->password)){
         $user->email =  $data->email;
         $email = $data->email;
-        $password =$user->password = $data->password;
+        $user->password = $data->password;
+        $password = $data->password;
 
 
         //check if email exist
         $emailExist = $user->getUserByEmail();
         if($emailExist !== false && $emailExist->num_rows > 0){
             $row = $emailExist->fetch_assoc();
-
-            if ($row["email"] === $email && $row["password"]===$password) {
-                echo json_encode(array("message"=> "Login Successful"));
-                
+            $hash = $row['password'];
+            $ispassword = password_verify($password, $hash);
+            if($ispassword == true){
+                echo json_encode(array("message"=> "correct Password", "password"=>$password, "encrypt password"=> $row['password']));
             }else {
-                echo json_encode(array("message"=> "Invalid Password"));
+                echo json_encode(array("message"=> "incorrect Password", "password"=>$password, "encrypt password"=> $row['password']));
             }
         }else{
             http_response_code(200);
             echo json_encode(array("message"=> "Email Does not Exist"));
         }
     }else {
-        echo json_encode(array("message"=> "return Email and password Compulsory"));
+        echo json_encode(array("message"=> "Email and password Compulsory"));
     }
 
     

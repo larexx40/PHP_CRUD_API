@@ -17,7 +17,7 @@
         $users->email = $data->email;
         $users->age = $data->age;
         $users->phoneno = $data->phoneno;
-        $users->password = password_hash($data->password, PASSWORD_DEFAULT);
+        $users->password = password_hash($data->password, PASSWORD_BCRYPT);
 
         if($users->insertUser()){
             http_response_code(200);
