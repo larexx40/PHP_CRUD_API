@@ -6,6 +6,7 @@
     header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
     include_once '../../models/users.php';
+    include_once '../apifunctions.php';
 
     //instantiate user object
     $users = new Users();
@@ -13,22 +14,31 @@
     $data = json_decode(file_get_contents("php://input"));
 
     if(!empty($data->username)&& !empty($data->email) && !empty($data->age) && !empty($data->phoneno) && !empty($data->password) ){
+        //validate
         $users->username = $data->username;
         $users->email = $data->email;
         $users->age = $data->age;
         $users->phoneno = $data->phoneno;
-        $users->password = password_hash($data->password, PASSWORD_BCRYPT);
 
-        if($users->insertUser()){
-            http_response_code(200);
-            echo json_encode(array("message"=>"User created"));
+        //check if email exist
+        $emailExist = $users->getUserByEmail();
+        if($emailExist !== false && $emailExist->num_rows > 0){
+            $data = "Email already exist";
+            $responseMessage = respondNotCompleted($data);
         }else{
-            http_response_code(503);
-            echo json_encode(array("message"=>"Iss with DB, Unable to create user"));
-        }
+            $users->password = password_hash($data->password, PASSWORD_BCRYPT);
+
+            if($users->insertUser()){
+                $data = "User created";
+                $responseMessage = respondOK($data);
+            }else{
+                $data = "DB server Error";
+                $responseMessage = respondInternalError($data);
+            }
+        }  
 
     }else{
-        http_response_code(400);
-        echo json_encode(array("message"=> "Invalid input, Unable to Create User"));
+        $data = "Invalid input, Unable to Create User";
+        $erroMessage = respondBadRequest($data);
     }
 ?>
