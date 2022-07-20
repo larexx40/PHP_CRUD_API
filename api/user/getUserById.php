@@ -3,6 +3,10 @@
     header("Content-Type: application/json; charset=UTF-8");
 
     include_once '../../models/users.php';
+    include_once '../apifunctions.php';
+    $method = getenv('REQUEST_METHOD');
+    $endpoint = "/api/user/".basename($_SERVER['PHP_SELF']);
+    $maindata=[];
 
     $user = new users();
 
@@ -13,13 +17,38 @@
         
         if($result = $user->getUserById()){
             $row = $result->fetch_all(MYSQLI_ASSOC);
-            echo json_encode($row);
+            $maindata=[$row];
+            $errordesc = " ";
+            $linktosolve = "htps://";
+            $hint = [];
+            $errordata = [];
+            $text = "User found";
+            $status = true;
+            $data = returnSuccessArray($text, $method, $endpoint, $errordata, $maindata, $status);
+            respondOK($data);
         }else {
-            echo json_encode(array("message"=> "No User Found", "status"=> "false"));
+            $maindata=[];
+            $errordesc = " ";
+            $linktosolve = "htps://";
+            $hint = [];
+            $errordata = [];
+            $text = "No User Found";
+            $status = false;
+            $data = returnErrorArray($text, $method, $endpoint, $errordata, $maindata, $status);
+            respondOK($data);
         }
     }else{
         http_response_code(400);
-        echo json_encode(array("message"=> "invalid id"));
+        $maindata=[];
+        $errordesc = " ";
+        $linktosolve = "htps://";
+        $hint = [];
+        $errordata = [];
+        $text = "invalid id";
+        $status = false;
+        $data = returnSuccessArray($text, $method, $endpoint, $errordata, $maindata, $status);
+        respondOK($data);
+
     }
 
 ?>

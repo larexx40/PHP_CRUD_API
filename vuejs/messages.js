@@ -1,7 +1,7 @@
 let app = Vue.createApp({
     data() {
         return {
-            pagetitle: 'View Messages',
+            pageTitle: 'View Messages',
             id: '',
             title: '',
             body: '',

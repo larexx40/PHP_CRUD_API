@@ -7,7 +7,7 @@
     <div id="user">
         <div>
         <form @submit.prevent="handleUserReg">
-            <h2>{{pageTitle}}</h2>
+            <h2>{{regTitle}} </h2>
             <label>Username:</label>
             <input type="text" v-model="username" required>
 

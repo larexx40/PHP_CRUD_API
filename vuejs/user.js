@@ -8,29 +8,10 @@ let app = Vue.createApp({
             age: '',
             password: '',
             authToken: '',
+            regTitle: "Register User",
         }
     },
     methods: {
-        async handleUserReg(){
-
-            let input ={
-                username: this.username,
-                email: this.email,
-                phoneno: this.phoneno,
-                age: this.age,
-                password: this.password,
-
-            }
-            let endpoint ='http://localhost/loadtask/src/services/insertUser.php'
-            try {
-                const response = await axios.post(endpoint, input);
-                console.log(response.data);
-            }
-            catch (error) {
-                console.log(error);
-            }
-            
-        },
         async handleLogin(){
             let input = {
                 email: this.email,
@@ -55,6 +36,38 @@ let app = Vue.createApp({
             } catch (error) {
                 console.log(error);
             }
+        },
+        async handleUserReg(){
+            let input ={
+                username: this.username,
+                email: this.email,
+                phoneno: this.phoneno,
+                age: this.age,
+                password: this.password,
+
+            }
+            console.log(input);
+            const url = 'http://localhost/loadPDO/api/user/create.php'; 
+            const options = {
+                method: "POST",
+                data: input,
+                url
+            }
+            try {
+                const response = await axios(options);
+                swal(response.data);
+                if (response.data.status === true) {
+                    //console.log(response.status);
+                    swal("Registration successful, Proceed to Login")
+                    window.location.href= "../view/login.php"
+                }else{
+                    console.log(response.data);
+                }
+            }
+            catch (error) {
+                console.log(error);
+            }
+            
         },
         getToken(){
             const token = window.localStorage.getItem("authToken");

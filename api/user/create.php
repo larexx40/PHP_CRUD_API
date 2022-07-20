@@ -7,6 +7,9 @@
 
     include_once '../../models/users.php';
     include_once '../apifunctions.php';
+    $method = getenv('REQUEST_METHOD');
+    $endpoint = "/api/user/".basename($_SERVER['PHP_SELF']);
+    $maindata=[];
 
     //instantiate user object
     $users = new Users();
@@ -23,22 +26,51 @@
         //check if email exist
         $emailExist = $users->getUserByEmail();
         if($emailExist !== false && $emailExist->num_rows > 0){
-            $data = "Email already exist";
-            $responseMessage = respondNotCompleted($data);
+            $maindata=[];
+            $errordesc = " ";
+            $linktosolve = "htps://";
+            $hint = [];
+            $errordata = [];
+            $text = "Email already exist";
+            $status = false;
+            $data = returnErrorArray($text, $method, $endpoint, $errordata, $maindata, $status);
+            respondOK($data);
         }else{
             $users->password = password_hash($data->password, PASSWORD_BCRYPT);
 
             if($users->insertUser()){
-                $data = "User created";
-                $responseMessage = respondOK($data);
-            }else{
-                $data = "DB server Error";
-                $responseMessage = respondInternalError($data);
+                $maindata=[];
+                $errordesc = " ";
+                $linktosolve = "htps://";
+                $hint = [];
+                $errordata = [];
+                $text = "User created";
+                $status = true;
+                $data = returnSuccessArray($text, $method, $endpoint, $errordata, $maindata, $status);
+                respondOK($data);
+
+            }else{//pass dberror message to eror data
+                $maindata=[];
+                $errordesc = " ";
+                $linktosolve = "htps://";
+                $hint = [];
+                $errordata = [];
+                $text = "DB server Error";
+                $status = false;
+                $data = returnErrorArray($text, $method, $endpoint, $errordata, $maindata, $status);
+                respondInternalError($data);
             }
         }  
 
-    }else{
-        $data = "Invalid input, Unable to Create User";
-        $erroMessage = respondBadRequest($data);
+    }else{//can pass error to errodata
+        $maindata=[];
+        $errordesc = " ";
+        $linktosolve = "htps://";
+        $hint = [];
+        $errordata = [];
+        $text = "Invalid input, Unable to Create User";
+        $status = false;
+        $data =  returnErrorArray($text, $method, $endpoint, $errordata, $maindata, $status);
+        respondBadRequest($data);
     }
 ?>

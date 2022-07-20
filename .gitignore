@@ -5,3 +5,5 @@ jwtToken.php
 userreferals.php
 myblog.sql
 
+view/reguser.php
+vuejs/insertmessage.js

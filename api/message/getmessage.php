@@ -4,6 +4,9 @@
 
     include_once '../../models/messages.php';
     include '../apifunctions.php';
+    $method = getenv('REQUEST_METHOD');
+    $endpoint = "/api/message/".basename($_SERVER['PHP_SELF']);
+    $maindata=[];
 
     $messages = new Messages ();
 
@@ -13,10 +16,11 @@
     $method = "GET";
     $endPoint = 'http://localhost/loadPDO/api/message/getmessage.php';
 
-   $validateJWT = ValidateAPITokenSentIN($serverName, $companyprivateKey, $method, $endPoint);
+    ValidateAPITokenSentIN($serverName, $companyprivateKey, $method, $endPoint);
 
     if ($result !== false && $result->num_rows > 0) {
         $row = $result->fetch_all(MYSQLI_ASSOC);
+
         echo json_encode($row);
     }else {
         echo json_encode(array("message"=> "No Message Found", "status"=> "false"));

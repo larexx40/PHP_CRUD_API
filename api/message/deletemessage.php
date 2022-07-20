@@ -3,7 +3,10 @@
     header("Content-Type: application/json; charset=UTF-8");
  
     include_once '../../models/messages.php';
-    include '../apifunctions.php';
+    include_once '../apifunctions.php';
+    $method = getenv('REQUEST_METHOD');
+    $endpoint = "/api/message/".basename($_SERVER['PHP_SELF']);
+    $maindata=[];
  
     $messages = new Messages ();
 
@@ -22,7 +25,7 @@
             $result = $messages->deleteMessage();
     
             if($result){
-                http_response_code(200); 
+                 
                 echo json_encode(array("message" => "Message deleted.", "status"=> true));
             }else{
                 http_response_code(503);   

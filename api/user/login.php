@@ -6,6 +6,9 @@
     
     include_once '../../models/users.php';
     include '../apifunctions.php';
+    $method = getenv('REQUEST_METHOD');
+    $endpoint = "/api/user/".basename($_SERVER['PHP_SELF']);
+    $maindata=[];
      
     $user = new Users();
 
@@ -33,16 +36,48 @@
             $hash = $row['password'];
             if(password_verify($password, $hash)){
                 $token =getTokenToSendAPI($email,$companyprivateKey,$minutetoend,$serverName);
-                echo json_encode(array("message"=> "correct Password", "authtoken"=> $token, "status"=> true));
+                $maindata=["authtoken"=> $token];
+                $errordesc = " ";
+                $linktosolve = "htps://";
+                $hint = [];
+                $errordata = [];
+                $text = "Login successful";
+                $status = true;
+                $data = returnSuccessArray($text, $method, $endpoint, $errordata, $maindata, $status);
+                respondOK($data);
             }else {
-                echo json_encode(array("message"=> "incorrect Password" , "status"=> false));
+                $maindata=[];
+                $errordesc = " ";
+                $linktosolve = "htps://";
+                $hint = [];
+                $errordata = [];
+                $text = "incorrect Password";
+                $status = true;
+                $data = returnSuccessArray($text, $method, $endpoint, $errordata, $maindata, $status);
+                respondOK($data);
             }
         }else{
             http_response_code(200);
-            echo json_encode(array("message"=> "Email Does not Exist", "status"=> false));
+            $maindata=[];
+                $errordesc = " ";
+                $linktosolve = "htps://";
+                $hint = [];
+                $errordata = [];
+                $text = "Email Does Not Exist";
+                $status = true;
+                $data = returnSuccessArray($text, $method, $endpoint, $errordata, $maindata, $status);
+                respondOK($data);
         }
     }else {
-        echo json_encode(array("message"=> "Email and password Compulsory", "status"=> false));
+        $maindata=[];
+        $errordesc = " ";
+        $linktosolve = "htps://";
+        $hint = [];
+        $errordata = [];
+        $text = "Email and password Required";
+        $status = true;
+        $data = respondBadRequest($text, $method, $endpoint, $errordata, $maindata, $status);
+        respondOK($data);
     }
 
     
