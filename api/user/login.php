@@ -57,16 +57,15 @@
                 respondOK($data);
             }
         }else{
-            http_response_code(200);
             $maindata=[];
-                $errordesc = " ";
-                $linktosolve = "htps://";
-                $hint = [];
-                $errordata = [];
-                $text = "Email Does Not Exist";
-                $status = true;
-                $data = returnSuccessArray($text, $method, $endpoint, $errordata, $maindata, $status);
-                respondOK($data);
+            $errordesc = " ";
+            $linktosolve = "htps://";
+            $hint = [];
+            $errordata = [];
+            $text = "Email Does Not Exist";
+            $status = true;
+            $data = returnSuccessArray($text, $method, $endpoint, $errordata, $maindata, $status);
+            respondOK($data);
         }
     }else {
         $maindata=[];
